@@ -1,9 +1,10 @@
 import 'reflect-metadata';
-import { createConnection, Connection, ConnectionOptions } from 'typeorm';
-import { join } from 'path'; //concatinate path segments
-const parentDir = join(__dirname, '..'); // Joins the current directory (__dirname) with .. to get the parent directory.
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { join } from 'path';
 
-const connectionOpts: ConnectionOptions = {
+const parentDir = join(__dirname, '..');
+
+const datasourceOpts: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 5432,
@@ -13,9 +14,9 @@ const connectionOpts: ConnectionOptions = {
   entities: [
     `${parentDir}/**/*.entity.ts`,
   ],
-  synchronize: true, //utomatically synchronizes the database schema with the entity definitions
+  synchronize: true,
 };
 
-const connection:Promise<Connection> = createConnection(connectionOpts);
+const AppDataSource = new DataSource(datasourceOpts);
 
-export default connection;//
+export default AppDataSource;
