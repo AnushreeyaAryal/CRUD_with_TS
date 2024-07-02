@@ -1,6 +1,6 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
-import { getRepository, Repository } from 'typeorm';
+import {Repository} from 'typeorm';
 import movieEntity from './movie.entity';
 import * as HttpStatus from 'http-status-codes';
 
@@ -12,7 +12,7 @@ const router: Router = new Router(routerOpts);
 
 router.get('/', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.getRepository(movieEntity);
 
   // Find the requested movie.
   const movies = await movieRepo.find();
@@ -25,7 +25,7 @@ router.get('/', async (ctx:Koa.Context) => {
 
 router.get('/:movie_id', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.ctx.state.db.getRepository(movieEntity);
 
   // Find the requested movie.
   const movie = await movieRepo.findOne({
@@ -35,7 +35,7 @@ router.get('/:movie_id', async (ctx:Koa.Context) => {
   // If the movie doesn't exist, then throw a 404.
   // This will be handled upstream by our custom error middleware.
   if (!movie) {
-    ctx.throw(HttpStatus.NOT_FOUND);
+    ctx.throw(HttpStatus.StatusCodes.NOT_FOUND);
   }
 
   // Respond with our movie data.
@@ -46,7 +46,7 @@ router.get('/:movie_id', async (ctx:Koa.Context) => {
 
 router.post('/', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.getRepository(movieEntity);
 
   // Create our new movie.
   const movie: movieEntity = movieRepo.create(ctx .request.body);
@@ -64,7 +64,7 @@ router.post('/', async (ctx:Koa.Context) => {
 
 router.delete('/:movie_id', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.getRepository(movieEntity);
 
   // Find the requested movie.
   const movie = await movieRepo.findOne({
@@ -74,19 +74,19 @@ router.delete('/:movie_id', async (ctx:Koa.Context) => {
   // If the movie doesn't exist, then throw a 404.
   // This will be handled upstream by our custom error middleware.
   if (!movie) {
-    ctx.throw(HttpStatus.NOT_FOUND);
+    ctx.throw(HttpStatus.StatusCodes.NOT_FOUND);
   }
 
   // Delete our movie.
   await movieRepo.delete(movie);
 
   // Respond with no data, but make sure we have a 204 response code.
-  ctx.status = HttpStatus.NO_CONTENT;
+  ctx.status = HttpStatus.StatusCodes.NO_CONTENT;
 });
 
 router.patch('/:movie_id', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.getRepository(movieEntity);
 
   // Find the requested movie.
   const movie:movieEntity = await movieRepo.findOne({
@@ -96,7 +96,9 @@ router.patch('/:movie_id', async (ctx:Koa.Context) => {
   // If the movie doesn't exist, then throw a 404.
   // This will be handled upstream by our custom error middleware.
   if (!movie) {
-    ctx.throw(HttpStatus.NOT_FOUND);
+    ctx.throw(HttpStatus.StatusCodes.INTERNAL_SERVER_ERROR
+
+    );
   }
 
   // Merge the existing movie with the new data.
