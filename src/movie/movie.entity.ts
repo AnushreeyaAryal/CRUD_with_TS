@@ -1,19 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
-export default class Movie {
-
-  @PrimaryGeneratedColumn() 
+export class User {
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable:false})
-  name: string;
+  @Column()
+  name:string;
 
   @Column()
-  releaseYear: number;
-
+  releaseYear:number;
+  
   @Column()
-  rating: number;
+  rating:number;
+
+  @CreateDateColumn({ type: "timestamp" })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: "timestamp" })
+  updated_at: Date;
 }
-//This decorator marks the id property as the primary key of the table
-  //he uuid type specifies that the primary key will be a UUID (Universally Unique Identifier).

@@ -3,12 +3,14 @@ import * as Koa from 'koa';
 import * as HttpStatus from 'http-status-codes';
 import movieController from '../movie/movie.controller';
 import * as bodyParser from 'koa-bodyparser';
+import AppDataSource from '../database/database.connection';
 
 const app:Koa = new Koa();
 
 // Generic error handling middleware.
 app.use(async (ctx: Koa.Context, next: () => Promise<any>) => {
   try {
+    ctx.state.db=AppDataSource;
     await next();
   } catch (error) {
     ctx.status = error.statusCode || error.status || HttpStatus.StatusCodes.INTERNAL_SERVER_ERROR;

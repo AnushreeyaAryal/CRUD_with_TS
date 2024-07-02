@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import {Repository} from 'typeorm';
-import movieEntity from './movie.entity';
+import {User as movieEntity} from './movie.entity';
 import * as HttpStatus from 'http-status-codes';
 
 const routerOpts: Router.IRouterOptions = {
@@ -25,7 +25,7 @@ router.get('/', async (ctx:Koa.Context) => {
 
 router.get('/:movie_id', async (ctx:Koa.Context) => {
   // Get the movie repository from TypeORM.
-  const movieRepo:Repository<movieEntity> = ctx.state.db.ctx.state.db.getRepository(movieEntity);
+  const movieRepo:Repository<movieEntity> = ctx.state.db.getRepository(movieEntity);
 
   // Find the requested movie.
   const movie = await movieRepo.findOne({
