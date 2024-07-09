@@ -5,6 +5,7 @@ import movieController from '../movie/movie.controller';
 import * as bodyParser from 'koa-bodyparser';
 import AppDataSource from '../database/database.connection';
 import * as yup from "yup";
+import {createSchema}  from '../schema/validator';
 
 
 const app:Koa = new Koa();
@@ -26,12 +27,29 @@ app.use(bodyParser());
 app.use(movieController.routes());
 app.use(movieController.allowedMethods()); //correct response for diallowed or non-implemented methods
 
-const createSchema= yup.object().shape({
-    id: yup.number().positive().required(),
-    name: yup.string().required(),
-    releaseYear: yup.number().positive().integer(),
-    rating: yup.number().positive().integer(),
-  });
+async function dataForValidation() {
+  const data= {
+    id: 1,
+    name:'poop',
+    releaseYear:2002,
+    rating:2
+  };
+
+try {
+  // Validate data
+  await createSchema.validate(data);
+  console.log('Validation done');
+} catch (error) {
+  // Handle validation errors
+  if (error instanceof yup.ValidationError) {
+    console.error('Validation failed', error.errors);
+  } else {
+    console.error('Unexpected error', error);
+  }
+}
+}
+
+dataForValidation();
   
 // Application error logging.
 app.on('error', console.error);
