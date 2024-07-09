@@ -4,6 +4,8 @@ import * as HttpStatus from 'http-status-codes';
 import movieController from '../movie/movie.controller';
 import * as bodyParser from 'koa-bodyparser';
 import AppDataSource from '../database/database.connection';
+import * as yup from "yup";
+
 
 const app:Koa = new Koa();
 
@@ -24,6 +26,13 @@ app.use(bodyParser());
 app.use(movieController.routes());
 app.use(movieController.allowedMethods()); //correct response for diallowed or non-implemented methods
 
+const createSchema= yup.object().shape({
+    id: yup.number().positive().required(),
+    name: yup.string().required(),
+    releaseYear: yup.number().positive().integer(),
+    rating: yup.number().positive().integer(),
+  });
+  
 // Application error logging.
 app.on('error', console.error);
 
