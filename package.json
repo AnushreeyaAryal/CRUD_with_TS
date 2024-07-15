@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "lint": "tslint --project tsconfig.json --format stylish",
+    "lint": "tslint --project sconfig.json --format stylish",
     "build": "tsc",
     "serve": "ts-node src/server.ts",
     "start": "nodemon"
